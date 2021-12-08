@@ -1,9 +1,10 @@
 import requests
 import json
+import sys
 
 result = []
 doc = {}
-query = 'Milan'
+query = sys.argv[1]
 url = 'https://en.wikipedia.org/w/api.php'
 params1 = {
         'action': 'query',
@@ -31,5 +32,5 @@ data = response.json()
 page = next(iter(data['query']['pages'].values()))
 doc['doc'] = page['extract']
 result.append(doc)
-json.dump(result, open('doc3.json', "w"))
+json.dump(result, open('./data/DocRED/doc.json', "w"))
 

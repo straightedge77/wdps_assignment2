@@ -5,7 +5,7 @@ import spacy
 nlp = spacy.blank("en")
 nlp.add_pipe('opentapioca')
 nlp.add_pipe('sentencizer')
-articles = json.load(open('doc3.json'))
+articles = json.load(open('./data/DocRED/doc.json'))
 result=[]
 for article in articles:
     if article['doc']:
@@ -45,5 +45,5 @@ for article in articles:
                 vertex.append(entity)
         item['vertexSet'] = vertex
         result.append(item)
-json.dump(result, open('test.json', "w"))
+json.dump(result, open('./data/DocRED/test.json', "w"))
 
