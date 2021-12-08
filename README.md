@@ -7,7 +7,7 @@
 - visualize.py是用于将结果生成图，生成的图为Graph.png
 
 ## Prerequisites
-DAS cluster上有创建好的conda虚拟环境assignment2.1, 代码在/var/scratch/wdps2106/SSAN/wdps2里面
+DAS cluster上有创建好的conda虚拟环境assignment2.1, 代码在/var/scratch/wdps2106/SSAN/wdps2/code里面
 
 ```
 # 自己配置环境
