@@ -27,12 +27,18 @@ for key in nodes:
     node = {}
     node['name'] = entity[key][0]['name']
     node['symbolSize'] = nodes[key]
-    if entity[key][0]['type'] == "PER":
+    if entity[key][0]['type'] == "PAD":
         node['category'] = 1
     elif entity[key][0]['type'] == "ORG":
         node['category'] = 2
-    else:
+    elif entity[key][0]['type'] == "LOC":
         node['category'] = 3
+    elif entity[key][0]['type'] == "NUM":
+        node['category'] = 4
+    elif entity[key][0]['type'] == "TIME":
+        node['category'] = 5
+    else:
+        node['category'] = 6
     label = {}
     label['show'] = True
     label['fontSize'] = 20
@@ -51,13 +57,25 @@ for relation in relations:
 result['links'] = temp
 categories = []
 category = {}
-category['name'] = "PER"
+category['name'] = "PAD"
 categories.append(category)
 category = {}
 category['name'] = "ORG"
 categories.append(category)
 category = {}
 category['name'] = "LOC"
+categories.append(category)
+category = {}
+category['name'] = "NUM"
+categories.append(category)
+category = {}
+category['name'] = "TIME"
+categories.append(category)
+category = {}
+category['name'] = "MISC"
+categories.append(category)
+category = {}
+category['name'] = "PER"
 categories.append(category)
 result['categories'] = categories
 json.dump(result, open('web.json', "w"))
