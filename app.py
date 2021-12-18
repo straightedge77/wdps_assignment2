@@ -34,7 +34,7 @@ for key in nodes:
     else:
         node['category'] = 3
     label = {}
-    label['show'] = True
+    label['show'] = "true"
     label['fontSize'] = 20
     node['label'] = label
     data.append(node)
