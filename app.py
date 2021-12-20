@@ -23,9 +23,13 @@ for item in links:
     if not item in temp:
         temp.append(item)
 nodes = Counter(point)
+id={}
+i=0
 for key in nodes:
     node = {}
     node['name'] = entity[key][0]['name']
+    node['id'] = i
+    id[entity[key][0]['name']] = i
     node['symbolSize'] = nodes[key]
     if entity[key][0]['type'] == "PAD":
         node['category'] = 1
@@ -44,6 +48,7 @@ for key in nodes:
     label['fontSize'] = 20
     node['label'] = label
     data.append(node)
+    i=i+1
 result['data'] = data
 for relation in relations:
     source = entity[relation['h_idx']][0]['name']
@@ -54,6 +59,9 @@ for relation in relations:
                 item['value'] = item['value'] + relation_info[relation['r']]
             else:
                 item['value'] = item['value'] + " | " + relation_info[relation['r']]
+for item in temp:
+    item['source'] = id[item['source']]
+    item['target'] = id[item['target']]
 result['links'] = temp
 categories = []
 category = {}

@@ -64,4 +64,3 @@ for article in articles:
         item['vertexSet'] = vertex
         result.append(item)
 json.dump(result, open('./data/DocRED/test.json', "w"))
-

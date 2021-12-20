@@ -4,7 +4,7 @@ import sys
 
 result = []
 doc = {}
-query = sys.argv[1]
+query = "United Kingdom"
 url = 'https://en.wikipedia.org/w/api.php'
 params1 = {
         'action': 'query',
@@ -30,7 +30,7 @@ response = requests.get(url, params=params)
 data = response.json()
  
 page = next(iter(data['query']['pages'].values()))
-doc['doc'] = page['extract']
+doc['doc'] = page['extract'].replace("\n", "")
 result.append(doc)
 json.dump(result, open('./data/DocRED/doc.json', "w"))
 

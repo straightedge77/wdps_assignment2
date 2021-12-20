@@ -5,7 +5,7 @@ data_dir=./data/DocRED/
 checkpoint_dir=./checkpoints/
 predict_thresh=0.46544307
 
-CUDA_VISIBLE_DEVICES=0 python ./pipeline.py \
+python ./pipeline.py \
   --model_type roberta \
   --entity_structure biaffine \
   --model_name_or_path ${pretrained_model} \
@@ -15,4 +15,4 @@ CUDA_VISIBLE_DEVICES=0 python ./pipeline.py \
   --max_seq_length 512 \
   --max_ent_cnt 100 \
   --checkpoint_dir $checkpoint_dir \
-  --seed 100
+  --seed 42

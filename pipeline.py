@@ -30,8 +30,7 @@ from dataset import DocREDProcessor
 
 from model import (BertForDocRED, RobertaForDocRED)
 logger = logging.getLogger(__name__)
-nlp = spacy.load("en_core_web_md")
-nlp.add_pipe("entityLinker", last=True)
+
 
 def set_seed(args):
     random.seed(args.seed)
@@ -208,11 +207,11 @@ def crawl(query):
     data = response.json()
  
     page = next(iter(data['query']['pages'].values()))
-    doc['doc'] = page['extract']
+    doc['doc'] = page['extract'].replace("\n", "")
     result.append(doc)
     return result
 
-def generate(articles):
+def generate(articles, nlp):
     result=[]
     for article in articles:
         if article['doc']:
@@ -295,9 +294,13 @@ def web():
         if not item in temp:
             temp.append(item)
     nodes = Counter(point)
+    id={}
+    i=0
     for key in nodes:
         node = {}
         node['name'] = entity[key][0]['name']
+        node['id'] = i
+        id[entity[key][0]['name']] = i
         node['symbolSize'] = nodes[key]
         if entity[key][0]['type'] == "PAD":
             node['category'] = 1
@@ -316,6 +319,7 @@ def web():
         label['fontSize'] = 20
         node['label'] = label
         data.append(node)
+        i=i+1
     result['data'] = data
     for relation in relations:
         source = entity[relation['h_idx']][0]['name']
@@ -326,6 +330,9 @@ def web():
                     item['value'] = item['value'] + relation_info[relation['r']]
                 else:
                     item['value'] = item['value'] + " | " + relation_info[relation['r']]
+    for item in temp:
+        item['source'] = id[item['source']]
+        item['target'] = id[item['target']]
     result['links'] = temp
     categories = []
     category = {}
@@ -350,13 +357,13 @@ def web():
     category['name'] = "PER"
     categories.append(category)
     result['categories'] = categories
-    json.dump(result, open('./Visualization/web.json', "w"))
+    json.dump(result, open('web.json', "w"))
     
-def main():
+def load():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--max_ent_cnt",
-        default=42,
+        default=60,
         type=int,
         help="The maximum entities considered.",
     )
@@ -366,23 +373,23 @@ def main():
                         help="whether and how do we incorporate entity structure in Transformer models.")
     parser.add_argument(
         "--data_dir",
-        default=None,
+        default="./data/DocRED/",
         type=str,
-        required=True,
+        required=False,
         help="The input data dir. Should contain the .tsv files (or other data files) for the task.",
     )
     parser.add_argument(
         "--model_type",
-        default=None,
+        default="roberta",
         type=str,
-        required=True,
+        required=False,
         help="Model type",
     )
     parser.add_argument(
         "--model_name_or_path",
-        default=None,
+        default="./pretrained_lm/roberta_base/",
         type=str,
-        required=True,
+        required=False,
         help="Path to pre-trained model or shortcut name",
     )
     parser.add_argument(
@@ -394,7 +401,7 @@ def main():
     )
     parser.add_argument(
         "--checkpoint_dir",
-        default=None,
+        default="./checkpoints/",
         type=str,
         required=False,
         help="The output directory where the model predictions and checkpoints will be written.",
@@ -424,7 +431,7 @@ def main():
     parser.add_argument("--do_train", action="store_true", help="Whether to run training.")
     parser.add_argument("--do_eval", action="store_true", help="Whether to run eval on the dev set.")
     parser.add_argument("--do_predict", action="store_true", help="Whether to run pred on the pred set.")
-    parser.add_argument("--predict_thresh", default=0.5, type=float, help="pred thresh")
+    parser.add_argument("--predict_thresh", default=0.46544307, type=float, help="pred thresh")
     parser.add_argument(
         "--evaluate_during_training", action="store_true", help="Run evaluation during training at each logging step.",
     )
@@ -483,6 +490,7 @@ def main():
     parser.add_argument("--server_ip", type=str, default="", help="For distant debugging.")
     parser.add_argument("--server_port", type=str, default="", help="For distant debugging.")
     args = parser.parse_args()
+    print(type(args))
 
     ModelArch = None
     if args.model_type == 'roberta':
@@ -548,36 +556,32 @@ def main():
         torch.distributed.barrier()  # Make sure only the first process in distributed training will download model & vocab
 
  # predict
-    if args.do_predict and args.local_rank in [-1, 0]:
-        tokenizer = AutoTokenizer.from_pretrained(args.checkpoint_dir, do_lower_case=args.do_lower_case)
-        model = ModelArch.from_pretrained(args.checkpoint_dir,
-                                          from_tf=bool(".ckpt" in args.model_name_or_path),
-                                          config=config,
-                                          cache_dir=args.cache_dir if args.cache_dir else None,
-                                          num_labels=num_labels,
-                                          max_ent_cnt=args.max_ent_cnt,
-                                          with_naive_feature=with_naive_feature,
-                                          entity_structure=args.entity_structure,
-                                          )
-        model.to(args.device)
-        query1 = "France"
-        print("Downloading document...")
-        articles1 = crawl(query1)
-        print("Converting into data...")
-        generate(articles1)
-        print("Extracting relationship...")
-        predict(args, model, tokenizer)
-        print("Converting into web data...")
-        web()
-        query2 = "Italy"
-        print("Downloading document...")
-        articles2 = crawl(query2)
-        print("Converting into data...")
-        generate(articles2)
-        print("Extracting relationship...")
-        predict(args, model, tokenizer)
-        print("Converting into web data...")
-        web()
+    tokenizer = AutoTokenizer.from_pretrained(args.checkpoint_dir, do_lower_case=args.do_lower_case)
+    model = ModelArch.from_pretrained(args.checkpoint_dir,
+                                      from_tf=bool(".ckpt" in args.model_name_or_path),
+                                      config=config,
+                                      cache_dir=args.cache_dir if args.cache_dir else None,
+                                      num_labels=num_labels,
+                                      max_ent_cnt=args.max_ent_cnt,
+                                      with_naive_feature=with_naive_feature,
+                                      entity_structure=args.entity_structure,
+    )
+    model.to(args.device)
+    nlp = spacy.load("en_core_web_md")
+    nlp.add_pipe("entityLinker", last=True)
+    return args,model,tokenizer,nlp
 
+def utilize(args, model, tokenizer, nlp, query):
+    print("Downloading document...")
+    articles1 = crawl(query)
+    print("Converting into data...")
+    generate(articles1, nlp)
+    print("Extracting relationship...")
+    predict(args, model, tokenizer)
+    print("Converting into web data...")
+    web()
+    
 if __name__ == "__main__":
-    main()
+    args, model, tokenizer, nlp = load()
+    query = "Germany"
+    utilize(args, model, tokenizer, nlp, query)
