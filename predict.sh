@@ -13,6 +13,6 @@ CUDA_VISIBLE_DEVICES=0 python ./run_docred.py \
   --predict_thresh $predict_thresh \
   --data_dir ${data_dir} \
   --max_seq_length 512 \
-  --max_ent_cnt 42 \
+  --max_ent_cnt 100 \
   --checkpoint_dir $checkpoint_dir \
-  --seed 42
+  --seed 100

@@ -10,14 +10,17 @@
 DAS cluster上有创建好的conda虚拟环境assignment2.1, 代码在/var/scratch/wdps2106/SSAN/wdps2/code里面
 
 ```
-# 自己配置环境
+# 自己配置环境(用pip或者conda装的部分)
 python==3.8
 pytorch==1.8.2
 cuda==11.1
-transformer==2.7.0
-matplotlib
-networkx(直接装就行)
-pickle
+transformers==2.7.0
+django
+spacy==3.2.0
+spacy-entity-linker
+(下载模型和数据库)
+python -m spacy download en_core_web_md
+python -m spacy_entity_linker "download_knowledge_base"
  ```
 
 ## Run

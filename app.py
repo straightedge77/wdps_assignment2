@@ -78,5 +78,5 @@ category = {}
 category['name'] = "PER"
 categories.append(category)
 result['categories'] = categories
-json.dump(result, open('web.json', "w"))
+json.dump(result, open('./Visualization/web.json', "w"))
 
