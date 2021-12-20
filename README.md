@@ -4,7 +4,8 @@
 - web.py是用于从wikipedia上爬取词条的title以及abstract,文件存储在./data/DocRED/doc.json
 - data-gen.py是用于将爬取的信息转换为模型可以使用的数据，文件存储在./data/DocRED/test.json
 - predict.sh是用于使用模型来进行关系提取，文件存储在./checkpoints/result.json
-- visualize.py是用于将结果生成图，生成的图为Graph.png
+- app.py是用于将结果生成可以运行在网络上的echarts
+- manage.py用于生成网页服务器
 
 ## Prerequisites
 DAS cluster上有创建好的conda虚拟环境assignment2.1, 代码在/var/scratch/wdps2106/SSAN/wdps2/code里面
@@ -29,8 +30,13 @@ python -m spacy_entity_linker "download_knowledge_base"
 srun --time=01:30:00 -C TitanX --gres=gpu:1 --pty /bin/bash
 conda activate assignment2.1
 module load cuda11.1/toolkit
-sh run.sh /subject/you/want/to/search
+python manage.py 然后打开127.0.0.1:8000即可
 ```
+如果在自己的电脑上
+```
+python manage.py 然后打开127.0.0.1:8000即可
+```
+
 
 如果自己创建环境,首先通过这两个链接https://drive.google.com/file/d/1Z_aR1BhJSYZCkW6rn5mWPjkAz3y2LEQ4/view?usp=sharing,https://drive.google.com/file/d/1eBRHffGIWzxnpHyKjZvno4DHGj1l0xUq/view?usp=sharing下载文件
 ```
