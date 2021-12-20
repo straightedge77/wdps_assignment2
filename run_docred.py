@@ -752,7 +752,6 @@ def main():
                                           )
         model.to(args.device)
         predict(args, model, tokenizer)
-
     return results
 
 if __name__ == "__main__":
