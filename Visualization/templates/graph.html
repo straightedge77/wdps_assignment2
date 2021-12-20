@@ -9,6 +9,12 @@
     </head>
     <body style="height: 100%; margin: 0">
         <h1>{{ title }}</h1>
+        <div>
+          <form action="/" method="get">
+            <input type="text" name="query"/><input type="submit" value="Query Now"/>
+          </form>
+          <h5>{{ message }}</h5>
+        </div>
         <div id="container" style="height: 100%"></div>
         <script type="text/javascript" src={% static "echarts/dist/echarts.js" %}></script>
         <!-- Uncomment this line if you want to dataTool extension
