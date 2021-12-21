@@ -7,13 +7,13 @@
     <head>
         <meta charset="utf-8">
     </head>
-    <body style="height: 100%; margin: 0">
+    <body style="height: 100%; margin: 0; text-align:center">
         <h1>{{ title }}</h1>
         <div>
           <form action="/" method="get">
             <input type="text" name="query"/><input type="submit" value="Query Now"/>
           </form>
-          <h5>{{ message }}</h5>
+          <h3>{{ message }}</h3>
         </div>
         <div id="container" style="height: 100%"></div>
 	<script src="https://cdn.staticfile.org/echarts/5.2.2/echarts.min.js"></script>
@@ -47,37 +47,31 @@ myChart.showLoading();
   myChart.hideLoading();
   option = {
     title: {
-      text: 'Testing Graph', 
+      text: 'Relation Graph', 
       subtext: 'Default layout',
       top: 'bottom',
       left: 'right'
     },
     tooltip: {},
+    legend: [
+      {
+        // selectedMode: 'single',
+        data: {{ categories|safe }}.map(function (a) {
+          return a.name;
+        })
+      }
+    ],
     animationDuration: 200,
     animationEasingUpdate: 'quinticInOut',
     series: [
       {
-        name: 'Les Miserables',
+        name: "Wikipedia abstract",
         type: 'graph',
-        //layout: 'circular',
         layout: 'force',
         force: {repulsion: 1000},
         data: {{ data|safe }},
         links: {{ links|safe }},
         categories: {{ categories|safe }},
-        //categories: [{name: "PER"}, {name: "ORG"}, {name: "LOC"}],
-/*
-        data: [{name: "x", symbolSize: 10, category: 0, value: 10, label : {show: true, fontSize: 20}},
-               {name: "y", symbolSize: 8, category: 1, value: 20, label : {show: true, fontSize: 20}},
-               {name: "z", symbolSize: 4, category: 2, value: 20, label : {show: true, fontSize: 20}}],
-        links: [{source: "x", target: "y", value: "test1 | test2 | test5"},
-                {source: "y", target: "x", value: "test4"},
-                {source: "y", target: "z", value: "test2"},
-                {source: "z", target: "x", value: "test3"},
-                ],
-        categories: [{name: "A"}, {name: "B"}, {name: "C"}],
-
-*/
         roam: true,
         label: {
           position: 'right',
