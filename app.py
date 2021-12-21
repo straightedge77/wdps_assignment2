@@ -43,17 +43,17 @@ def web():
         # the size of the model is the number of the time it appear in the relations
         node['symbolSize'] = nodes[key]
         if entity[key][0]['type'] == "PAD":
-            node['category'] = 1
+            node['category'] = 0
         elif entity[key][0]['type'] == "ORG":
-            node['category'] = 2
+            node['category'] = 1
         elif entity[key][0]['type'] == "LOC":
-            node['category'] = 3
+            node['category'] = 2
         elif entity[key][0]['type'] == "NUM":
-            node['category'] = 4
+            node['category'] = 3
         elif entity[key][0]['type'] == "TIME":
-            node['category'] = 5
+            node['category'] = 4
         else:
-            node['category'] = 6
+            node['category'] = 5
         label = {}
         label['show'] = "true"
         label['fontSize'] = 20
