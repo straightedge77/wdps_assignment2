@@ -26,7 +26,7 @@ def load():
     # set parameters of the model
     parser.add_argument(
         "--max_ent_cnt",
-        default=80,
+        default=42,
         type=int,
         help="The maximum entities considered.",
     )

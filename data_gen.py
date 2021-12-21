@@ -17,7 +17,7 @@ def generate(articles, nlp):
                 entity1 = linked_entity.get_span()
                 for entity2 in doc.ents:
                     # We only select the entities that are recognized by the en_core_web_md and this entityLinker pipeline
-                    if entity1.start == entity2.start:
+                    if entity1.start == entity2.start or entity1.end == entity2.end:
                         enti = {}
                         enti['entity'] = linked_entity
                         enti['ent'] = entity2
@@ -50,23 +50,25 @@ def generate(articles, nlp):
                             mention['sent_id'] = sentid[ent.sent.start]
                             mention['description'] = ent2.get_description()
                             mention['pos'] = [ent.start - ent.sent.start, ent.end - ent.sent.start]
-                            if ent.label_ == "GPE":
+                            if ent.label_ == "GPE" or ent.label_ == "LOC":
                                 mention['type'] = "LOC"
-                            elif ent.label_ == "PERSON":
+                            elif ent.label_ == "PERSON" or ent.label_ == "NORP":
                                 mention['type'] = "PER"
                             elif ent.label_ == "ORG":
                                 mention['type'] = "ORG"
-                            elif ent.label_ == "NUM":
+                            elif ent.label_ == "QUANTITY" or ent.label_ == "CARDINAL":
                                 mention['type'] = "NUM"
-                            elif ent.label_ == "TIME":
+                            elif ent.label_ == "DATE":
                                 mention['type'] = "TIME"
-                            elif ent.label_ == "PAD":
+                            elif ent.label_ == "ORDINAL":
                                 mention['type'] = "PAD"
                             else:
                                 mention['type'] = "MISC"
                             entity.append(mention)
                             flag[j] = 0
                     vertex.append(entity)
+            if len(vertex) > 42:
+                vertex = vertex[:42]
             item['vertexSet'] = vertex
             result.append(item)
     json.dump(result, open('./data/DocRED/test.json', "w"))

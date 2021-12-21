@@ -18,8 +18,8 @@ def web():
         point.append(relation['h_idx'])
         point.append(relation['t_idx'])
         link = {}
-        link['source'] = entity[relation['h_idx']][0]['name']
-        link['target'] = entity[relation['t_idx']][0]['name']
+        link['source'] = relation['h_idx']
+        link['target'] = relation['t_idx']
         link['value'] = ""
         links.append(link)
     # there may be multiple relation between two nodes, need to remove the duplicate edges
@@ -39,7 +39,7 @@ def web():
         node['id'] = i
         # the value of the node is the description of the entity from wikidata
         node['value'] = entity[key][0]['description']
-        id[entity[key][0]['name']] = i
+        id[key] = i
         # the size of the model is the number of the time it appear in the relations
         node['symbolSize'] = nodes[key]
         if entity[key][0]['type'] == "PAD":
@@ -63,8 +63,8 @@ def web():
     result['data'] = data
     # the value of the edges is the relation information
     for relation in relations:
-        source = entity[relation['h_idx']][0]['name']
-        target = entity[relation['t_idx']][0]['name']
+        source = relation['h_idx']
+        target = relation['t_idx']
         for item in temp:
             # if there is multiple relation in one edge, the value should record down all relation information
             if source == item['source'] and target == item['target']:
