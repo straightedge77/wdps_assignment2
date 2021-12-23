@@ -32,3 +32,4 @@ unzip these two files and put them in directory where contains the code
 ```
 python manage.py (open 127.0.0.1:8000 in browser)
 ```
+If the program return errors like the thread is occupied, just restart the program and it will all ok.
