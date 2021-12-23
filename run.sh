@@ -1,9 +1,0 @@
-rm -rf ./data/DocRED/doc.json
-echo Downloading document...
-python web.py $1
-echo Converting into data...
-python data-gen.py
-echo Extracting relationship...
-sh predict.sh
-echo Converting into web data
-python app.py
